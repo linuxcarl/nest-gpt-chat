@@ -14,8 +14,10 @@ export class GptController {
   }
 
   @Post('pros-cons')
-  prosConsDicusser(@Body() body: ProsConsDiscusserDto) {
-    return this.gptService.prosConsDiscusser(body);
+  async prosConsDicusser(@Body() body: ProsConsDiscusserDto) {
+    const res = await this.gptService.prosConsDiscusser(body);
+    console.log(res);
+    return res;
   }
 
   @Post('pros-cons-stream')
