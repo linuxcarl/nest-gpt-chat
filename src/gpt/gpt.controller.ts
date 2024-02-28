@@ -1,6 +1,15 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { GptService } from './gpt.service';
 import {
+  GetAudioDto,
   OrthographyDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
@@ -44,7 +53,22 @@ export class GptController {
   }
 
   @Post('text-to-audio')
-  textToAudio(@Body() body: TextToAudioDto) {
-    return this.gptService.textToAudio(body);
+  async textToAudio(@Body() body: TextToAudioDto, @Res() res: Response) {
+    const filePaht = await this.gptService.textToAudio(body);
+    res.setHeader('Content-Type', 'audio/mp3');
+    res.status(200);
+    res.sendFile(filePaht);
+  }
+
+  @Get('text-to-audio/:fileId')
+  async textToAudioGet(@Param() fileId: GetAudioDto, @Res() res: Response) {
+    const { fileId: file } = fileId;
+    const fileAudio = await this.gptService.getAudio(file);
+    if (!fileAudio) {
+      throw new NotFoundException(`File ${file} not found`);
+    }
+    res.setHeader('Content-Type', 'audio/mp3');
+    res.status(200);
+    res.sendFile(fileAudio);
   }
 }

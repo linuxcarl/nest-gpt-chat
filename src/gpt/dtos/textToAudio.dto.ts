@@ -10,3 +10,7 @@ export class TextToAudioDto {
   @IsOptional()
   readonly max_tokens?: number;
 }
+export class GetAudioDto {
+  @IsString()
+  readonly fileId: string;
+}

@@ -12,6 +12,10 @@ export const textToAudioUseCase = async (openIa: OpenAI, options: Options) => {
   const voices = {
     nova: 'nova',
     alloy: 'alloy',
+    echo: 'echo',
+    fable: 'fable',
+    onyx: 'onyx',
+    shimmer: 'shimmer',
   };
   const selectedVoice = voices[voice] ?? 'nova';
 
@@ -27,4 +31,16 @@ export const textToAudioUseCase = async (openIa: OpenAI, options: Options) => {
   const buffer = Buffer.from(await mp3.arrayBuffer());
   fs.writeFileSync(speachFile, buffer);
   return speachFile;
+};
+
+export const getAudioByIdUseCase = async (id: string) => {
+  const speachFile = path.resolve(
+    __dirname,
+    `../../../genereted/audios/${id}.mp3`,
+  );
+  const exists = fs.existsSync(speachFile);
+  if (exists) {
+    return speachFile;
+  }
+  return null;
 };
