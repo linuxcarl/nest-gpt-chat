@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  audioToTextUseCase,
   getAudioByIdUseCase,
   orthographyCheckUseCase,
   prosConsDiscusserUseCase,
@@ -37,5 +38,8 @@ export class GptService {
   }
   async getAudio(fileId: string) {
     return await getAudioByIdUseCase(fileId);
+  }
+  async AudioToText(body) {
+    return await audioToTextUseCase(this.openIa, body);
   }
 }
