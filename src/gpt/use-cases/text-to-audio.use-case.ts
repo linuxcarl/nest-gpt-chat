@@ -19,7 +19,7 @@ export const textToAudioUseCase = async (openIa: OpenAI, options: Options) => {
   };
   const selectedVoice = voices[voice] ?? 'nova';
 
-  const folderPath = path.join(__dirname, '../../../genereted/audios/');
+  const folderPath = path.join(__dirname, '../../../generated/audios/');
   const speachFile = path.resolve(folderPath, `./${new Date().getTime()}.mp3`);
   fs.mkdirSync(folderPath, { recursive: true });
   const mp3 = await openIa.audio.speech.create({
@@ -36,7 +36,7 @@ export const textToAudioUseCase = async (openIa: OpenAI, options: Options) => {
 export const getAudioByIdUseCase = async (id: string) => {
   const speachFile = path.resolve(
     __dirname,
-    `../../../genereted/audios/${id}.mp3`,
+    `../../../generated/audios/${id}.mp3`,
   );
   const exists = fs.existsSync(speachFile);
   if (exists) {
