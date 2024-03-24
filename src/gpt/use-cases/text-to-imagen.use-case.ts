@@ -20,11 +20,11 @@ export const textToImagenUseCase = async (openIa: OpenAI, options: Options) => {
     response_format: 'url',
   });
 
-  await downloadImageAsPng(image.data[0].url);
+  const url = await downloadImageAsPng(image.data[0].url);
 
   return {
-    url: image.data[0].url,
-    localPath: '',
+    url: url,
+    localPath: image.data[0].url,
     originalImage,
     maskImage,
     revised_path: image.data[0].revised_prompt,
