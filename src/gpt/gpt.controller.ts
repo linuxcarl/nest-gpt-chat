@@ -19,6 +19,7 @@ import {
   ProsConsDiscusserDto,
   TextToAudioDto,
   TranslateDto,
+  textToImagenDto,
 } from './dtos';
 import { ProsConsStreamDto } from './dtos/ProsConsStream.dto';
 import { Response } from 'express';
@@ -83,7 +84,7 @@ export class GptController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './genereted/audios',
+        destination: './generated/audios',
         filename: (req, file, cb) => {
           const fileExtention = file.originalname.split('.').pop();
           const fileName = `${new Date().getTime()}.${fileExtention}`;
@@ -113,5 +114,21 @@ export class GptController {
       audioFile: file,
       prompt: body.prompt,
     });
+  }
+
+  @Post('texto-to-imagen')
+  textToImagen(@Body() body: textToImagenDto) {
+    return this.gptService.textToImage(body);
+  }
+  @Get('texto-to-imagen/:name')
+  async getImagenById(
+    @Param() parms: { name: string },
+    @Res() response: Response,
+  ) {
+    const { name } = parms;
+    const res = await this.gptService.getImage(name);
+    response.setHeader('Content-Type', 'image/png');
+    response.status(200);
+    response.sendFile(res);
   }
 }

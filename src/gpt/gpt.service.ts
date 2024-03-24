@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import {
   audioToTextUseCase,
   getAudioByIdUseCase,
+  getImageUseCase,
   orthographyCheckUseCase,
   prosConsDiscusserUseCase,
   prosConsStreamUseCase,
   textToAudioUseCase,
+  textToImagenUseCase,
   translateUseCase,
 } from './use-cases';
 import {
@@ -41,5 +43,11 @@ export class GptService {
   }
   async AudioToText(body) {
     return await audioToTextUseCase(this.openIa, body);
+  }
+  async textToImage(body) {
+    return await textToImagenUseCase(this.openIa, body);
+  }
+  async getImage(name) {
+    return await getImageUseCase(name);
   }
 }
