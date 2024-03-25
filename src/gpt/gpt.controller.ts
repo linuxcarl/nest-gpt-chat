@@ -19,6 +19,7 @@ import {
   ProsConsDiscusserDto,
   TextToAudioDto,
   TranslateDto,
+  imagenVariationDto,
   textToImagenDto,
 } from './dtos';
 import { ProsConsStreamDto } from './dtos/ProsConsStream.dto';
@@ -119,6 +120,10 @@ export class GptController {
   @Post('texto-to-imagen')
   textToImagen(@Body() body: textToImagenDto) {
     return this.gptService.textToImage(body);
+  }
+  @Post('imagen-variation')
+  imagenVariation(@Body() body: imagenVariationDto) {
+    return this.gptService.generateImageVariation(body);
   }
   @Get('texto-to-imagen/:name')
   async getImagenById(

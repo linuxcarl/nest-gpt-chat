@@ -3,6 +3,7 @@ import {
   audioToTextUseCase,
   getAudioByIdUseCase,
   getImageUseCase,
+  imageVariationUseCase,
   orthographyCheckUseCase,
   prosConsDiscusserUseCase,
   prosConsStreamUseCase,
@@ -11,6 +12,7 @@ import {
   translateUseCase,
 } from './use-cases';
 import {
+  imagenVariationDto,
   OrthographyDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
@@ -46,6 +48,9 @@ export class GptService {
   }
   async textToImage(body) {
     return await textToImagenUseCase(this.openIa, body);
+  }
+  async generateImageVariation({ baseImage }: imagenVariationDto) {
+    return await imageVariationUseCase(this.openIa, { baseImage });
   }
   async getImage(name) {
     return await getImageUseCase(name);
