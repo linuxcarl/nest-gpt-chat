@@ -35,19 +35,27 @@ export const textToImagenUseCase = async (openIa: OpenAI, options: Options) => {
     };
   }
 
-  const pngImagenPath = await downloadImageAsPng(originalImage, true);
+  const pngImagePath = await downloadImageAsPng(originalImage, true);
   const maskPath = await downloadBase64ImageAsPng(maskImage, true);
 
   const response = await openIa.images.edit({
-    prompt,
-    image: fs.createReadStream(pngImagenPath),
+    model: 'dall-e-2',
+    prompt: prompt,
+    image: fs.createReadStream(pngImagePath),
     mask: fs.createReadStream(maskPath),
     n: 1,
-    model: 'dall-e-2',
-    response_format: 'url',
     size: '1024x1024',
+    response_format: 'url',
   });
-  return response;
+
+  const fileName = await downloadImageAsPng(response.data[0].url);
+  const url = `${process.env.URI_SERVER}/gpt/texto-to-imagen/${fileName}`;
+
+  return {
+    url: url,
+    openAIUrl: response.data[0].url,
+    revised_prompt: response.data[0].revised_prompt,
+  };
 };
 export const getImageUseCase = async (name: string) => {
   const speachImage = path.resolve(
