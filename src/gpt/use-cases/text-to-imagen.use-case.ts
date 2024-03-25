@@ -14,29 +14,29 @@ interface Options {
 
 export const textToImagenUseCase = async (openIa: OpenAI, options: Options) => {
   const { prompt, originalImage, maskImage } = options;
-  const image = await openIa.images.generate({
-    prompt,
-    model: 'dall-e-3',
-    n: 1,
-    size: '1024x1024',
-    quality: 'standard',
-    response_format: 'url',
-  });
+  if (!originalImage || !maskImage) {
+    const image = await openIa.images.generate({
+      prompt,
+      model: 'dall-e-3',
+      n: 1,
+      size: '1024x1024',
+      quality: 'standard',
+      response_format: 'url',
+    });
 
-  const fileName = await downloadImageAsPng(image.data[0].url);
+    const fileName = await downloadImageAsPng(image.data[0].url);
 
-  return {
-    url: `${process.env.URI_SERVER}/gpt/texto-to-imagen/${fileName}`,
-    localPath: image.data[0].url,
-    originalImage,
-    maskImage,
-    revised_path: image.data[0].revised_prompt,
-  };
-};
-export const editImageUseCase = async (openIa: OpenAI, options: Options) => {
-  const { prompt, originalImage, maskImage } = options;
-  const pngImagenPath = await downloadImageAsPng(originalImage);
-  const maskPath = await downloadBase64ImageAsPng(maskImage);
+    return {
+      url: `${process.env.URI_SERVER}/gpt/texto-to-imagen/${fileName}`,
+      localPath: image.data[0].url,
+      originalImage,
+      maskImage,
+      revised_path: image.data[0].revised_prompt,
+    };
+  }
+
+  const pngImagenPath = await downloadImageAsPng(originalImage, true);
+  const maskPath = await downloadBase64ImageAsPng(maskImage, true);
 
   const response = await openIa.images.edit({
     prompt,

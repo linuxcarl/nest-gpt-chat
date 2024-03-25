@@ -1,7 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { InternalServerErrorException } from '@nestjs/common';
 import * as sharp from 'sharp';
+
+import { InternalServerErrorException } from '@nestjs/common';
 
 export const downloadImageAsPng = async (
   url: string,
@@ -10,9 +11,7 @@ export const downloadImageAsPng = async (
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new InternalServerErrorException(
-      `Failed to download image from ${url}`,
-    );
+    throw new InternalServerErrorException('Download image was not possible');
   }
 
   const folderPath = path.resolve('./', './generated/images/');
@@ -20,9 +19,12 @@ export const downloadImageAsPng = async (
 
   const imageNamePng = `${new Date().getTime()}.png`;
   const buffer = Buffer.from(await response.arrayBuffer());
+
+  // fs.writeFileSync( `${ folderPath }/${ imageNamePng }`, buffer );
   const completePath = path.join(folderPath, imageNamePng);
-  //fs.writeFileSync(path.resolve(folderPath, imageNamePng), buffer);
+
   await sharp(buffer).png().ensureAlpha().toFile(completePath);
+
   return fullPath ? completePath : imageNamePng;
 };
 
@@ -37,6 +39,7 @@ export const downloadBase64ImageAsPng = async (
   fs.mkdirSync(folderPath, { recursive: true });
 
   const imageNamePng = `${new Date().getTime()}-64.png`;
+
   const completePath = path.join(folderPath, imageNamePng);
   await sharp(imageBuffer).png().ensureAlpha().toFile(completePath);
 
